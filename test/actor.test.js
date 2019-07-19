@@ -51,4 +51,21 @@ describe('actor routes', () => {
       });
   });
 
+  it('can update a person by id', async() => {
+    const actor = await Actor.create({ name: 'jcvd', dob: '11-13-1970', pob: 'Brussels' });
+
+    return request(app)
+      .put(`/api/v1/actors/${actor._id}`)
+      .send({ name: 'Kurt Russel', dob: new Date('10-13-1962'), pob: 'Heaven' })
+      .then(res => {
+        const actorJSON = JSON.parse(JSON.stringify(actor));
+        expect(res.body).toEqual({
+          ...actorJSON,
+          name: 'Kurt Russel', 
+          dob: new Date('10-13-1962').toISOString(), 
+          pob: 'Heaven' 
+        });
+      });
+  });
+
 });
