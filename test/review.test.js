@@ -55,19 +55,31 @@ describe('review routes', () => {
       });
   });
 
-//   it('GET all reviews', () => {
-//     return request(app)
-//       .get('/api/v1/films')
-//       .then(res => {
-//         expect(res.body).toEqual([{
-//           _id: expect.any(String),
-//           rating: 3,
-//           film: {
-//             _id: film._id,
-//             title: film.title
-//           }
-//         }]);
-//       });
-//   });
+
+  it('GET all reviews', async() => {
+
+    await Promise.all([...Array(101)].map(() => {
+      return Review.create({
+        rating: 5,
+        reviewer: reviewer._id,
+        review: 'neat',
+        film: film._id,
+      });
+    }));
+
+    return request(app)
+      .get('/api/v1/reviews')
+      .then(res => {
+        expect(res.body[0]).toEqual({
+          _id: expect.any(String),
+          rating: 5,
+          review: expect.any(String),
+          film: {
+            _id: film._id,
+            title: film.title
+          },
+        });
+      });
+  });
 
 });

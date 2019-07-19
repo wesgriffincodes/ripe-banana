@@ -4,9 +4,6 @@ const request = require('supertest');
 const app = require('../lib/app');
 const connect = require('../lib/utils/connect');
 const mongoose = require('mongoose');
-// const Actor = require('../lib/models/Actor');
-// const Film = require('../lib/models/Film');
-// const Studio = require('../lib/models/Studio');
 const Film = require('../lib/models/Film');
 const Studio = require('../lib/models/Studio');
 const Actor = require('../lib/models/Actor');
@@ -23,17 +20,6 @@ describe('actor routes', () => {
   beforeEach(() => {
     return mongoose.connection.dropDatabase();
   });
-
-
-  // let actor = null;
-  // let film = null;
-  // let studio = null;
-  // beforeEach(async() => {
-  //   studio = JSON.parse(JSON.stringify(await Studio.create({ name: 'universal' })));
-  // actor = JSON.parse(JSON.stringify(await Actor.create({ name: 'Ben Kingsley', dob: new Date(11-11-1944), pob: 'London' })));
-  //   film = JSON.parse(JSON.stringify(await Film.create({ title: 'Captain Ron', released: 1993 })));
-  // });
-
 
   let studio = null;
   let actor = null;
@@ -52,20 +38,7 @@ describe('actor routes', () => {
     return mongoose.connection.close();
   });
 
-  // it('create an actor', () => {
-  //   return request(app)
-  //     .post('/api/v1/actors')
-  //     .send({ name: 'jcvd', dob: '11-13-1970', pob: 'Brussels' })
-  //     .then(res => {
-  //       expect(res.body).toEqual({
-  //         _id: expect.any(String),
-  //         name: 'jcvd',
-  //         dob: expect.any(String),
-  //         pob: 'Brussels',
-  //         __v: 0
-  //       });
-  //     });
-  // });
+
   it('create an actor', () => {
     return request(app)
       .post('/api/v1/actors')
