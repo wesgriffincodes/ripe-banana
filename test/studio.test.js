@@ -69,8 +69,6 @@ describe('studio routes', () => {
         expect(res.body.name).toEqual('universal');
         filmsJSON.forEach(film => {
           expect(res.body.films).toContainEqual(film);
-          console.log('Films:', film);
-          console.log('studio', studio);
         });
       });
   });

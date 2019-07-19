@@ -7,6 +7,9 @@ const mongoose = require('mongoose');
 const Film = require('../lib/models/Film');
 const Studio = require('../lib/models/Studio');
 const Actor = require('../lib/models/Actor');
+const Reviewer = require('../lib/models/Reviewer');
+const Review = require('../lib/models/Review');
+
 
 describe('film routes', () => {
   beforeAll(() => {
@@ -21,10 +24,14 @@ describe('film routes', () => {
   let studio = null;
   let actor = null;
   let film = null;
+  let reviewer = null;
+  let review = null;
   beforeEach(async() => {
     studio = JSON.parse(JSON.stringify(await Studio.create({ name: 'universal' })));
     actor = JSON.parse(JSON.stringify(await Actor.create({ name: 'Ben Kingsley'  })));
     film = JSON.parse(JSON.stringify(await Film.create({ title: 'Captain Ron', studio: studio._id, released: 1993, cast: [{ actor: actor._id, role: 'Captain' }] })));
+    reviewer = JSON.parse(JSON.stringify(await Reviewer.create({ name: 'bobby bling', company: 'who cares' })));
+    review = JSON.parse(JSON.stringify(await Review.create({ rating: 3, reviewer: reviewer._id, review:'another review', film: film._id })));
   });
 
 
@@ -67,6 +74,39 @@ describe('film routes', () => {
 
         }]);
 
+      });
+  });
+
+  it('Gets film by ID', async() => {
+    return request(app)
+      .get(`/api/v1/films/${film._id}`)
+      .then(res => {
+        expect(res.body).toEqual({
+          title: 'Captain Ron',
+          studio: {
+            _id: studio._id.toString(),
+            name: studio.name
+          },
+          released: 1993,
+          cast: [{
+            _id: expect.any(String),
+            role: 'Captain',
+            actor: {
+              _id: actor._id,
+              name: actor.name
+            }
+          }],
+          reviews: [{
+            _id: review._id, 
+            rating: review.rating, 
+            review: review.review,
+            reviewer: {
+              _id: reviewer._id,
+              name: reviewer.name
+            }
+          }]
+
+        });
       });
   });
 
