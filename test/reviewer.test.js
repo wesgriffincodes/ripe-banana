@@ -88,5 +88,19 @@ describe('reviewer routes', () => {
       });
   });
 
+  it('PUT updates a person by id', async() => {
+    return request(app)
+      .put(`/api/v1/reviewers/${reviewer._id}`)
+      .send({ name: 'bobby bling', company: 'who cares' })
+      .then(res => {
+        const reviewerJSON = JSON.parse(JSON.stringify(reviewer));
+        expect(res.body).toEqual({
+          ...reviewerJSON,
+          name: 'bobby bling',
+          company: 'who cares'
+        });
+      });
+  });
+
 });
 
