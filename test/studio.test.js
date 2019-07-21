@@ -4,8 +4,11 @@ const request = require('supertest');
 const app = require('../lib/app');
 const connect = require('../lib/utils/connect');
 const mongoose = require('mongoose');
-const Studio = require('../lib/models/Studio');
 const Film = require('../lib/models/Film');
+const Studio = require('../lib/models/Studio');
+const Actor = require('../lib/models/Actor');
+const Reviewer = require('../lib/models/Reviewer');
+const Review = require('../lib/models/Review');
 
 describe('studio routes', () => {
   beforeAll(() => {
@@ -14,6 +17,19 @@ describe('studio routes', () => {
 
   beforeEach(() => {
     return mongoose.connection.dropDatabase();
+  });
+
+  let studio = null;
+  let actor = null;
+  let film = null;
+  let reviewer = null;
+  let review = null;
+  beforeEach(async() => {
+    studio = JSON.parse(JSON.stringify(await Studio.create({ name: 'universal' })));
+    actor = JSON.parse(JSON.stringify(await Actor.create({ name: 'Ben Kingsley'  })));
+    film = JSON.parse(JSON.stringify(await Film.create({ title: 'Captain Ron', studio: studio._id, released: 1993, cast: [{ actor: actor._id, role: 'Captain' }] })));
+    reviewer = JSON.parse(JSON.stringify(await Reviewer.create({ name: 'bobby bling', company: 'who cares' })));
+    review = JSON.parse(JSON.stringify(await Review.create({ rating: 3, reviewer: reviewer._id, review:'another review', film: film._id })));
   });
 
   afterAll(() => {
@@ -55,20 +71,18 @@ describe('studio routes', () => {
       });
   });
 
-  it('get studio by id', async() => {
-    const studio = await Studio.create({ name: 'universal', address: { city: 'LA', state: 'California', country: 'USA' } });
-    const films = await Film.create([
-      { title: 'y', studio: studio._id, released: 1991 },
-      { title: 'c', studio: studio._id, released: 2001 }
-    ]);
-
+  it('GET studio by id', async() => {
     return request(app)
       .get(`/api/v1/studios/${studio._id}`)
       .then(res => {
-        const filmsJSON = JSON.parse(JSON.stringify(films));
-        expect(res.body.name).toEqual('universal');
-        filmsJSON.forEach(film => {
-          expect(res.body.films).toContainEqual(film);
+        expect(res.body).toEqual({
+          _id: studio._id,
+          name: studio.name,
+          address: studio.address,
+          films: [{
+            _id: film._id,
+            title: film.title
+          }]
         });
       });
   });

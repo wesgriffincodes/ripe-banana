@@ -74,12 +74,12 @@ describe('actor routes', () => {
       .get(`/api/v1/actors/${actor._id}`)
       .then(res => {
         expect(res.body).toEqual({
-          name: actor.name.toString(),
+          name: actor.name,
           dob: actor.dob,
           pob: actor.pob,
           films: [{
             _id: film._id,
-            title: film.title.toString(),
+            title: film.title,
             released: 1993
           }]
         });
