@@ -110,4 +110,12 @@ describe('film routes', () => {
       });
   });
 
+  it('DELETE a film by id', async() => {
+    return request(app)
+      .delete(`/api/v1/films/${film._id}`)
+      .then(res => {
+        const deleteFilm = JSON.parse(JSON.stringify(film));
+        expect(res.body).toEqual(deleteFilm);
+      });
+  });
 });

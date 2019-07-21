@@ -104,4 +104,15 @@ describe('actor routes', () => {
       });
   });
 
+  it('DELETES and actor', async() => {
+
+    return request(app)
+      .delete(`/api/v1/actors/${actor._id}`)
+      .then(res => {
+        expect(res.body).toEqual({
+          message: 'MOVIES exist!!!'
+        });
+      });
+  });
+
 });
