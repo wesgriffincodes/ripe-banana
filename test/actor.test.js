@@ -22,8 +22,6 @@ describe('actor routes', () => {
   let studio = null;
   let actor = null;
   let film = null;
-
-
   beforeEach(async() => {
     studio = JSON.parse(JSON.stringify(await Studio.create({ name: 'universal' })));
     actor = JSON.parse(JSON.stringify(await Actor.create({ name: 'Ben Kingsley', dob: new Date(1944, 11, 11), pob: 'London' })));
@@ -84,7 +82,6 @@ describe('actor routes', () => {
 
 
   it('can update a person by id', async() => {
-    const actor = await Actor.create({ name: 'jcvd', dob: '11-13-1970', pob: 'Brussels' });
 
     return request(app)
       .put(`/api/v1/actors/${actor._id}`)

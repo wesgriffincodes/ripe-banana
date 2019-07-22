@@ -22,14 +22,11 @@ describe('studio routes', () => {
   let studio = null;
   let actor = null;
   let film = null;
-  let reviewer = null;
-  let review = null;
+
   beforeEach(async() => {
     studio = JSON.parse(JSON.stringify(await Studio.create({ name: 'universal' })));
     actor = JSON.parse(JSON.stringify(await Actor.create({ name: 'Ben Kingsley'  })));
     film = JSON.parse(JSON.stringify(await Film.create({ title: 'Captain Ron', studio: studio._id, released: 1993, cast: [{ actor: actor._id, role: 'Captain' }] })));
-    reviewer = JSON.parse(JSON.stringify(await Reviewer.create({ name: 'bobby bling', company: 'who cares' })));
-    review = JSON.parse(JSON.stringify(await Review.create({ rating: 3, reviewer: reviewer._id, review:'another review', film: film._id })));
   });
 
   afterAll(() => {
