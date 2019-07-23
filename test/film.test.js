@@ -63,7 +63,7 @@ describe('film routes', () => {
     return request(app)
       .get('/api/v1/films')
       .then(res => {
-        expect(res.body).toEqual([{
+        expect(res.body).toContainEqual({
           _id: expect.any(String),
           title: 'Captain Ron',
           released: 1993,
@@ -72,7 +72,7 @@ describe('film routes', () => {
             name: studio.name
           }
 
-        }]);
+        });
 
       });
   });
