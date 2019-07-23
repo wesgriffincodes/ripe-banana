@@ -4,7 +4,9 @@ const request = require('supertest');
 const app = require('../lib/app');
 const connect = require('../lib/utils/connect');
 const mongoose = require('mongoose');
+const Film = require('../lib/models/Film');
 const Studio = require('../lib/models/Studio');
+const Actor = require('../lib/models/Actor');
 
 describe('studio routes', () => {
   beforeAll(() => {
@@ -13,6 +15,16 @@ describe('studio routes', () => {
 
   beforeEach(() => {
     return mongoose.connection.dropDatabase();
+  });
+
+  let studio = null;
+  let actor = null;
+  let film = null;
+
+  beforeEach(async() => {
+    studio = JSON.parse(JSON.stringify(await Studio.create({ name: 'universal' })));
+    actor = JSON.parse(JSON.stringify(await Actor.create({ name: 'Ben Kingsley'  })));
+    film = JSON.parse(JSON.stringify(await Film.create({ title: 'Captain Ron', studio: studio._id, released: 1993, cast: [{ actor: actor._id, role: 'Captain' }] })));
   });
 
   afterAll(() => {
@@ -49,27 +61,24 @@ describe('studio routes', () => {
       .then(res => {
         const studiosJSON = JSON.parse(JSON.stringify(studios));
         studiosJSON.forEach(studio => {
-          console.log(studio);
           expect(res.body).toContainEqual({ name: studio.name, _id: studio._id });
         });
       });
   });
 
-  // it('get studio by id', async() => {
-  //   const studio = await Studio.create({ name: 'universal', address: { city: 'LA', state: 'California', country: 'USA' } });
-  //   const films = await Film.create([
-  //     { name: 'y', studio: studio._id },
-  //     { name: 'c', studio: studio._id }
-  //   ]);
-
-  //   return request(app)
-  //     .get(`/api/v1/studios/${studio._id}`)
-  //     .then(res => {
-  //       const filmsJSON = JSON.parse(JSON.stringify(films));
-  //       expect(res.body.name).toEqual('universal');
-  //       filmsJSON.forEach(film => {
-  //         expect(res.body.films).toContainEqual(film);
-  //       });
-  //     });
-  // });
+  it('GET studio by id', async() => {
+    return request(app)
+      .get(`/api/v1/studios/${studio._id}`)
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: studio._id,
+          name: studio.name,
+          address: studio.address,
+          films: [{
+            _id: film._id,
+            title: film.title
+          }]
+        });
+      });
+  });
 });
